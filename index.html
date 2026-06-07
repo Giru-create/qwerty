@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Tic-Tac-Toe</title>
+  <meta name="description" content="A premium, neon-infused, interactive Tic-Tac-Toe game with smart Minimax AI, localized scoring, canvas confetti, and Web Audio sound design.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas for dynamic confetti and particle effects -->
+  <canvas id="effects-canvas"></canvas>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <h1>TIC<span>TAC</span>TOE</h1>
+        <p class="subtitle">QUANTUM EDITION</p>
+      </div>
+      <div class="control-buttons">
+        <button id="sound-toggle" aria-label="Toggle Sound" class="icon-btn active">
+          <!-- Audio On Icon -->
+          <svg class="icon icon-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <!-- Audio Off Icon -->
+          <svg class="icon icon-sound-off hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+        <button id="theme-toggle" aria-label="Toggle Theme" class="icon-btn">
+          <!-- Sun Icon for Light Mode -->
+          <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <!-- Moon Icon for Dark Mode -->
+          <svg class="icon icon-moon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Game Setup controls -->
+    <section class="game-setup-panel glass-card">
+      <div class="setting-group">
+        <label>Game Mode</label>
+        <div class="toggle-switch-container">
+          <button id="mode-pvp" class="switch-btn active">PvP</button>
+          <button id="mode-pve" class="switch-btn">vs AI</button>
+        </div>
+      </div>
+
+      <div id="ai-difficulty-group" class="setting-group disabled">
+        <label>AI Level</label>
+        <div class="toggle-switch-container">
+          <button id="diff-easy" class="switch-btn active" disabled>Casual</button>
+          <button id="diff-hard" class="switch-btn" disabled>Unbeatable</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scoreboard -->
+    <section class="scoreboard">
+      <div class="score-card player-x-card active-turn">
+        <span class="player-label">PLAYER X</span>
+        <span id="score-x" class="score-value">0</span>
+        <div class="turn-indicator">YOUR TURN</div>
+      </div>
+      
+      <div class="score-card ties-card">
+        <span class="player-label">TIES</span>
+        <span id="score-ties" class="score-value">0</span>
+      </div>
+
+      <div class="score-card player-o-card">
+        <span id="player-o-name" class="player-label">PLAYER O</span>
+        <span id="score-o" class="score-value">0</span>
+        <div class="turn-indicator">YOUR TURN</div>
+      </div>
+    </section>
+
+    <!-- Main Game Board Container -->
+    <main class="board-container">
+      <div class="board" id="game-board">
+        <!-- Cells will be generated dynamically or kept static with interactive regions -->
+        <button class="cell" data-index="0" aria-label="Cell 1"></button>
+        <button class="cell" data-index="1" aria-label="Cell 2"></button>
+        <button class="cell" data-index="2" aria-label="Cell 3"></button>
+        <button class="cell" data-index="3" aria-label="Cell 4"></button>
+        <button class="cell" data-index="4" aria-label="Cell 5"></button>
+        <button class="cell" data-index="5" aria-label="Cell 6"></button>
+        <button class="cell" data-index="6" aria-label="Cell 7"></button>
+        <button class="cell" data-index="7" aria-label="Cell 8"></button>
+        <button class="cell" data-index="8" aria-label="Cell 9"></button>
+
+        <!-- SVG strike line for winning combo connection -->
+        <svg class="win-line-svg" viewBox="0 0 300 300">
+          <line id="winning-strike-line" x1="0" y1="0" x2="0" y2="0" />
+        </svg>
+      </div>
+    </main>
+
+    <!-- Game Reset Controls -->
+    <footer class="game-footer">
+      <button id="restart-btn" class="action-btn primary-btn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+        </svg>
+        Restart Round
+      </button>
+      <button id="reset-scores-btn" class="action-btn secondary-btn">
+        Reset Scores
+      </button>
+    </footer>
+  </div>
+
+  <!-- Game Outcome Overlay (Modal) -->
+  <div id="outcome-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-card scale-up">
+      <div id="modal-badge" class="badge-icon"></div>
+      <h2 id="modal-title">PLAYER X WINS!</h2>
+      <p id="modal-subtitle">Brilliant strategies displayed</p>
+      <button id="modal-action-btn" class="action-btn primary-btn">Play Again</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
