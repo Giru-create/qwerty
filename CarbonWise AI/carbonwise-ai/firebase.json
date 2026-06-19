@@ -1,0 +1,13 @@
+{
+  "hosting": {
+    "site": "carbonwise-ai-499904",
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false
+  }
+}
